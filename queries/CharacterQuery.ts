@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client";
 
+// TODO: Add pagination && Fragment declarations
+
 export const GET_ALL_CHARACTERS = gql`
   query GET_ALL_CHARACTERS {
     allPeople(first: 200) {
@@ -33,7 +35,7 @@ export const GET_ALL_CHARACTERS = gql`
 
 export const GET_CHARACTER = gql`
   query getCharacter($id: ID) {
-    person(personID: $id) {
+    person(id: $id) {
       id
       name
       birthYear

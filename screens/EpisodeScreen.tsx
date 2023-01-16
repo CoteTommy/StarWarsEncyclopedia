@@ -13,24 +13,18 @@ export default function EpisodeScreen({ navigation }: RootTabScreenProps<"Episod
   if (loading) return <LoadingIndicator />;
   if (error) return <Text>Error: {error.message}</Text>;
 
-  const renderItem = ({ item }: any) => {
+  const renderItem = ({ item: movie }: any) => {
     return (
-      <Pressable onPress={() => navigation.navigate("Movie", { movie: item })} style={styles.item}>
-        {/* // <View > */}
-        {/* <Pressable onPress={() => console.log("Pressed: ", item)} style={styles.item}> */}
-        {/* <View style={styles.top}> */}
-        <Text style={styles.card_title}>{item.title}</Text>
-        <Text style={styles.card_subtitle}>{item.releaseDate}</Text>
-        {/* </View> */}
-        <Text style={styles.card_description}>{item?.openingCrawl?.substring(0, 50)}...</Text>
+      <Pressable onPress={() => navigation.navigate("MovieDetails", { movie_id: movie.episodeID })} style={styles.item}>
+        <Text style={styles.card_title}>{movie.title}</Text>
+        <Text style={styles.card_subtitle}>{movie.releaseDate}</Text>
+        <Text style={styles.card_description}>{movie?.openingCrawl?.substring(0, 50)}...</Text>
       </Pressable>
-      // </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Movie List</Text> */}
       <View style={styles.list}>
         <FlashList
           onRefresh={refetch}

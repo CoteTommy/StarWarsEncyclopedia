@@ -9,21 +9,10 @@ import { getData, storeData } from "@helpers/AsyncStorageHelper";
 import { GET_ALL_CHARACTERS } from "@queries/CharacterQuery";
 import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from "react";
-import { Person, RootTabScreenProps } from "types";
+import { Person } from "types";
 
-
-// type RootProps = {
-//   navigation: any;
-//   CharacterScreen: {
-//     character: Person;
-//   };
-// };
-
-// type CharacterScreenRouteProps = RouteProp<RootProps, "CharacterScreen">;
-// const CharacterScreen = () => {
-//   const routeParams = useRoute<CharacterScreenRouteProps>().params;
-//   const navigation = useNavigation();
-export default function CharacterScreen({ navigation: _navigation }: RootTabScreenProps<"Character">) {
+// type CharacterScreenRouteProps = RouteProp<RootStackParamList, "Character">;
+const CharacterScreen = () => {
   const { data: queryData, loading, error, refetch } = useQuery(GET_ALL_CHARACTERS);
   const [likedCharacters, setLikedCharacters] = useState<string[]>([]);
 
@@ -51,14 +40,10 @@ export default function CharacterScreen({ navigation: _navigation }: RootTabScre
   const renderItem = ({ item }: { item: Person }) => {
     console.log("🚀 ~ file: CharacterScreen.tsx:19 ~ renderItem ~ person", item);
     return (
-      // <Pressable onPress={() => _navigation.navigate("MovieDetail", { movieId: item.id })}>
-      // <View >
       <Pressable onPress={() => console.log("Pressed: ", item)} style={styles.item}>
-        {/* <View style={styles.top}> */}
         <Text style={styles.card_title}>{item.name}</Text>
         <Text style={styles.card_subtitle}>Birth year: {item.birthYear}</Text>
         <Text style={styles.card_subtitle}>Amount of movies: {item.filmConnection.films.length}</Text>
-        {/* </View> */}
         <Text style={styles.card_description}></Text>
         <Pressable style={{ alignSelf: "flex-end" }} onPress={() => handleLikeButton(item.id)} hitSlop={10}>
           <FontAwesome
@@ -68,13 +53,11 @@ export default function CharacterScreen({ navigation: _navigation }: RootTabScre
           />
         </Pressable>
       </Pressable>
-      // </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Movie List</Text> */}
       <View style={styles.list}>
         <FlashList
           onRefresh={refetch}
@@ -88,7 +71,7 @@ export default function CharacterScreen({ navigation: _navigation }: RootTabScre
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -129,21 +112,14 @@ const styles = StyleSheet.create({
   card_title: {
     fontSize: 18,
     fontWeight: "bold",
-    // fontFamily: "Strjmono",
   },
   card_subtitle: {
-    // alignSelf: "flex-end",
-    // float: "right",
     fontSize: 18,
   },
   card_description: {
     fontSize: 18,
     paddingTop: 4,
   },
-  // top: {
-  //   backgroundColor: "transparent",
-  //   display: "flex",
-  //   flexDirection: "row",
-  //   justifyContent: "space-between",
-  // }
 });
+
+export default CharacterScreen;

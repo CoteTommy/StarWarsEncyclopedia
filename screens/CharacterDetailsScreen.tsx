@@ -3,74 +3,60 @@ import { Pressable, StyleSheet, Text } from "react-native";
 import { useQuery } from "@apollo/client";
 import { LoadingIndicator } from "@components/LoadingIndicator";
 import { View } from "@components/Themed";
-import { GET_MOVIE } from "@queries/MovieQuery";
+import { GET_CHARACTER } from "@queries/CharacterQuery";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
-import { Film } from "types";
+import { Person, RootStackParamList } from "types";
 
-type RootProps = {
-  navigation: any;
-  MovieScreen: {
-    movie: Film;
-  };
-};
-
-type MovieScreenRouteProps = RouteProp<RootProps, "MovieScreen">;
-const MovieScreen = () => {
-  const routeParams = useRoute<MovieScreenRouteProps>().params;
+type CharacterDetailsScreenProps = RouteProp<RootStackParamList, "CharacterDetails">;
+const CharacterDetailsScreen = () => {
+  const routeParams = useRoute<CharacterDetailsScreenProps>().params;
+  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
+  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
+  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
+  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
   const navigation = useNavigation();
-  const { data, loading, error, refetch } = useQuery(GET_MOVIE, {
-    variables: { id: routeParams.movie.episodeID },
+  const { data, loading, error } = useQuery(GET_CHARACTER, {
+    variables: { id: routeParams.character_id },
   });
 
   if (loading) return <LoadingIndicator />;
   if (error) return <Text>Error: {error.message}</Text>;
 
-  const movie = data.film as Film;
+  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:23 ~ CharacterDetailsScreen ~ data", data);
+  const character = data.person as Person;
 
-  navigation.setOptions({ title: movie.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
+  // navigation.setOptions({ title: movie.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
 
-  const renderItem = ({ item }: any) => {
-    console.log("🚀 ~ file: MovieScreen.tsx:34 ~ renderItem ~ item", item);
+  const renderItem = ({ item: movie }: any) => {
+    console.log("🚀 ~ file: MovieScreen.tsx:34 ~ renderItem ~ item", movie);
     return (
-      // <View style={styles.item}>
-      <Pressable style={styles.item} onPress={() => navigation.navigate("Character", { character: item })}>
-        <Text style={styles.card_title}>{item.name}</Text>
+      <Pressable style={styles.item} onPress={() => navigation.navigate("MovieDetails", { movie_id: movie.id })}>
+        <Text style={styles.card_title}>{movie.title}</Text>
       </Pressable>
     );
   };
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>{movie.title}</Text> */}
       <View style={styles.informationContainer}>
-        <Text style={styles.card_subtitle}>
-          {/* <FontAwesome name="calendar" size={24} color="#FFE81F" /> */}
-          Release Date: {movie.releaseDate}
-        </Text>
+        {/* <Text style={styles.card_subtitle}>Release Date: {movie.releaseDate}</Text>
         <Text style={styles.card_subtitle}>Species Count: {movie.speciesConnection.totalCount}</Text>
         <Text style={styles.card_subtitle}>Planet Count: {movie.planetConnection.totalCount}</Text>
-        <Text style={styles.card_subtitle}>Vehicles Count: {movie.vehicleConnection.totalCount}</Text>
+        <Text style={styles.card_subtitle}>Vehicles Count: {movie.vehicleConnection.totalCount}</Text> */}
         <View style={styles.list}>
-          <Text style={styles.card_subtitle}>Characters:</Text>
+          <Text style={styles.card_subtitle}>Movies:</Text>
           <FlashList
-            // ListHeaderComponent={() => (
-            //   <Text style={styles.card_subtitle}>Characters</Text>
-            // )}
-            // onRefresh={refetch}
-            // refreshing={loading}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
-            data={movie.characterConnection.characters}
-            estimatedItemSize={movie.characterConnection.totalCount || 10}
+            data={character.filmConnection.films}
+            estimatedItemSize={character.filmConnection.totalCount || 10}
           />
         </View>
       </View>
     </View>
   );
 };
-
-export default MovieScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -107,14 +93,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   list: {
-    // alignSelf: "center",
     height: "100%",
     width: "100%",
   },
   card_title: {
     fontSize: 18,
     fontWeight: "bold",
-    // fontFamily: "Strjmono",
     color: "#FFE81F",
   },
   card_subtitle: {
@@ -126,3 +110,5 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
 });
+
+export default CharacterDetailsScreen;

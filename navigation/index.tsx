@@ -12,12 +12,13 @@ import { ColorSchemeName } from "react-native";
 
 import Colors from "@constants/Colors";
 import useColorScheme from "@hooks/useColorScheme";
+import CharacterDetailsScreen from "@screens/CharacterDetailsScreen";
 import CharacterScreen from "@screens/CharacterScreen";
 import EpisodeScreen from "@screens/EpisodeScreen";
 import HomeScreen from "@screens/HomeScreen";
 import LikedCharacters from "@screens/LikedCharacterScreen";
 import ModalScreen from "@screens/ModalScreen";
-import MovieScreen from "@screens/MovieScreen";
+import { default as MovieDetailsScreen } from "@screens/MovieDetailsScreen";
 import NotFoundScreen from "@screens/NotFoundScreen";
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "types";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -41,7 +42,8 @@ function RootNavigator() {
     <Stack.Navigator initialRouteName="Root">
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="Character" component={CharacterScreen} options={{ headerShown: true }} />
-      <Stack.Screen name="Movie" component={MovieScreen} options={{ headerShown: true }} />
+      <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} options={{ headerShown: true }} />
+      <Stack.Screen name="CharacterDetails" component={CharacterDetailsScreen} options={{ headerShown: true }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
