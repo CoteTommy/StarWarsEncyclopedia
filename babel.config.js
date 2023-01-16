@@ -17,6 +17,7 @@ module.exports = function (api) {
             "@screens": "./screens",
             "@queries": "./queries",
             "@helpers": "./helpers",
+            "@colors": "./constants/Colors.ts",
           },
         },
       ],

@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
-import { Text, View } from "../components/Themed";
+import { StarWarsText } from "@components/StyledText";
+import { Separator, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<"Home">) {
@@ -21,9 +22,8 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<"Home">) {
         }}
         source={require('@assets/starWarsAnimation.json')}
       /> */}
-      <Text style={styles.title}>Star Wars Encyclopedia</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.3)" />
-
+      <StarWarsText style={styles.title}>Star Wars Encyclopedia</StarWarsText>
+      <Separator />
       {/* <Pressable style={styles.button} onPress={() => console.log("Pressed")}>
         <Text style={styles.text}>View Movies</Text>
       </Pressable>
@@ -43,12 +43,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: "600",
-    fontFamily: "Strjmono",
+    // fontFamily: "Strjmono",
     textAlign: "center",
     lineHeight: 40,
-    textShadowColor: "rgba(255,232,31,0.5)",
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 20,
+    // textShadowColor: "rgba(255,232,31,0.5)",
+    // textShadowOffset: { width: -1, height: 1 },
+    // textShadowRadius: 20,
   },
   text: {
     fontSize: 24,
