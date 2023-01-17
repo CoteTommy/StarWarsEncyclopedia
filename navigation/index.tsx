@@ -13,7 +13,6 @@ import { ColorSchemeName } from "react-native";
 import Colors from "@constants/Colors";
 import useColorScheme from "@hooks/useColorScheme";
 import CharacterDetailsScreen from "@screens/CharacterDetailsScreen";
-import CharacterScreen from "@screens/CharacterScreen";
 import EpisodeScreen from "@screens/EpisodeScreen";
 import HomeScreen from "@screens/HomeScreen";
 import LikedCharacters from "@screens/LikedCharacterScreen";
@@ -41,7 +40,6 @@ function RootNavigator() {
   return (
     <Stack.Navigator initialRouteName="Root">
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Character" component={CharacterScreen} options={{ headerShown: true }} />
       <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} options={{ headerShown: true }} />
       <Stack.Screen name="CharacterDetails" component={CharacterDetailsScreen} options={{ headerShown: true }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />

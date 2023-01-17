@@ -16,8 +16,6 @@ const linking: LinkingOptions<RootStackParamList> = {
       Root: {
         screens: {
           Home: {},
-          // Movie: {},
-          // Character: {},
           Episode: {},
           LikedCharacter: {},
         },

@@ -2,14 +2,22 @@ import { LikedStatus } from "@constants/Enums";
 import { FontAwesome } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Person } from "types";
 
-const CharacterListItem = ({ item, likedCharacters, handleLikeButton, navigation }): JSX.Element => {
+interface Props {
+  item: { item: Person };
+  likedCharacters: string[];
+  handleLikeButton: (id: string) => void;
+  navigation: any;
+}
+
+const CharacterListItem: React.FC<Props> = ({ item, likedCharacters, handleLikeButton, navigation }): JSX.Element => {
   const character = item.item;
   const singleTap = Gesture.Tap()
     .runOnJS(true)
     .maxDuration(300)
     .onStart(() => {
-      navigation.navigate("CharacterDetail", { character_id: character.id });
+      navigation.navigate("CharacterDetails", { character_id: character.id });
     });
 
   const doubleTap = Gesture.Tap()
@@ -24,7 +32,10 @@ const CharacterListItem = ({ item, likedCharacters, handleLikeButton, navigation
     <GestureDetector gesture={Gesture.Exclusive(doubleTap, singleTap)}>
       <View style={styles.item}>
         <Text style={styles.card_title}>{character.name}</Text>
-        <Pressable style={{ alignSelf: "flex-end" }} onPress={() => handleLikeButton(character.id)} hitSlop={10}>
+        <Pressable
+          style={{ alignSelf: "flex-end", zIndex: 100 }}
+          onPress={() => handleLikeButton(character.id)}
+          hitSlop={10}>
           <FontAwesome
             name={likedCharacters.includes(character.id) ? LikedStatus.Liked : LikedStatus.NotLiked}
             size={24}
@@ -70,14 +81,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   list: {
-    // alignSelf: "center",
     height: "100%",
     width: "100%",
   },
   card_title: {
     fontSize: 18,
     fontWeight: "bold",
-    // fontFamily: "Strjmono",
     color: "#FFE81F",
   },
   card_subtitle: {

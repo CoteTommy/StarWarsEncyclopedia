@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from "react-native";
+import { Dimensions, Image, StyleSheet, Text } from "react-native";
 
 import { useQuery } from "@apollo/client";
 import CharacterListItem from "@components/CharacterListItem";
@@ -10,15 +10,17 @@ import { GET_MOVIE } from "@queries/MovieQuery";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from "react";
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from "react-native-reanimated";
 import { Film, RootStackParamList } from "types";
 
 type MovieDetailsScreenProps = RouteProp<RootStackParamList, "MovieDetails">;
 const MovieDetailsScreen = () => {
+  const scale = useSharedValue(0);
+  const opacity = useSharedValue(1);
   const navigation = useNavigation();
+  const AnimatedImage = Animated.createAnimatedComponent(Image);
   const routeParams = useRoute<MovieDetailsScreenProps>().params;
   const [likedCharacters, setLikedCharacters] = useState<string[]>([]);
-  // const rrr = useRef(null);
-
   const { data, loading, error } = useQuery(GET_MOVIE, {
     variables: { id: routeParams.movie_id },
   });
@@ -33,16 +35,29 @@ const MovieDetailsScreen = () => {
     storeData(StorageKeys.LikedCharacters, likedCharacters.join(","));
   }, [likedCharacters]);
 
-  const handleLikeButton = (id: string) => {
-    likedCharacters.includes(id)
-      ? setLikedCharacters(likedCharacters.filter((characterId) => characterId !== id))
-      : setLikedCharacters([...likedCharacters, id]);
-  };
-
   useEffect(() => {
     data &&
       navigation.setOptions({ title: data.film.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
   }, [data]);
+
+  const handleLikeButton = (id: string) => {
+    likedCharacters.includes(id);
+
+    likedCharacters.includes(id)
+      ? setLikedCharacters(likedCharacters.filter((characterId) => characterId !== id))
+      : setLikedCharacters([...likedCharacters, id]);
+
+    scale.value = withSpring(1, undefined, (isFinished) => {
+      if (isFinished) {
+        scale.value = withDelay(500, withSpring(0));
+      }
+    });
+  };
+
+  const imageStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: Math.max(scale.value, 0) }],
+    opacity: opacity.value,
+  }));
 
   if (loading) return <LoadingIndicator />;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -50,14 +65,50 @@ const MovieDetailsScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Animated.View
+        style={{
+          flex: 1,
+          width: SIZE,
+          zIndex: 5,
+          position: "absolute",
+          justifyContent: "center",
+          alignItems: "center",
+          bottom: 0,
+          top: 0,
+          right: 0,
+          left: 0,
+        }}
+        pointerEvents="none">
+        <AnimatedImage
+          source={require("@assets/images/heart.png")}
+          style={[
+            styles.image,
+            {
+              shadowOffset: { width: 0, height: 20 },
+              shadowOpacity: 0.35,
+              shadowRadius: 35,
+            },
+            imageStyle,
+          ]}
+          resizeMode={"center"}
+        />
+      </Animated.View>
       <View style={styles.informationContainer}>
-        <Text style={styles.card_subtitle}>Planet Count: {movie.planetConnection.totalCount}</Text>
-        <Text style={styles.card_subtitle}>Release Date: {movie.releaseDate}</Text>
-        <Text style={styles.card_subtitle}>Species Count: {movie.speciesConnection.totalCount}</Text>
-        <Text style={styles.card_subtitle}>Vehicles Count: {movie.vehicleConnection.totalCount}</Text>
         <View style={styles.list}>
-          <Text style={styles.card_subtitle}>Characters:</Text>
           <FlashList
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            ListHeaderComponent={() => (
+              <View style={{ paddingVertical: 10 }}>
+                <Text style={styles.card_subtitle}>Planet Count: {movie.planetConnection.totalCount}</Text>
+                <Text style={styles.card_subtitle}>Release Date: {movie.releaseDate}</Text>
+                <Text style={styles.card_subtitle}>Species Count: {movie.speciesConnection.totalCount}</Text>
+                <Text style={styles.card_subtitle}>Vehicles Count: {movie.vehicleConnection.totalCount}</Text>
+                <Text style={[styles.card_subtitle, { paddingTop: 6 }]}>Opening Scroll:</Text>
+                <Text style={[styles.card_subtitle, { fontSize: 14, paddingBottom: 10 }]}>{movie.openingCrawl}</Text>
+                <Text style={[styles.card_subtitle, { paddingTop: 10 }]}>Characters:</Text>
+              </View>
+            )}
             renderItem={(item) => CharacterListItem({ item, likedCharacters, handleLikeButton, navigation })}
             keyExtractor={(item) => item.id.toString()}
             data={movie.characterConnection.characters}
@@ -70,12 +121,18 @@ const MovieDetailsScreen = () => {
   );
 };
 
+const { width: SIZE } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     flex: 1,
     justifyContent: "flex-start",
     paddingVertical: 20,
+  },
+  image: {
+    width: SIZE,
+    height: SIZE,
   },
   informationContainer: {
     alignItems: "flex-start",
@@ -105,14 +162,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   list: {
-    // alignSelf: "center",
     height: "100%",
     width: "100%",
   },
   card_title: {
     fontSize: 18,
     fontWeight: "bold",
-    // fontFamily: "Strjmono",
     color: "#FFE81F",
   },
   card_subtitle: {

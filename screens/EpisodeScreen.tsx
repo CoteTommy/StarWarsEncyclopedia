@@ -52,9 +52,6 @@ const EpisodeScreen = () => {
     });
   }, [sortedMovies]);
 
-  if (loading) return <LoadingIndicator />;
-  if (error) return <Text>Error: {error.message}</Text>;
-
   const renderItem = ({ item: movie }: any) => {
     return (
       <Pressable onPress={() => navigation.navigate("MovieDetails", { movie_id: movie.episodeID })} style={styles.item}>
@@ -72,10 +69,15 @@ const EpisodeScreen = () => {
     ] as StyleProp<TextStyle>;
   };
 
+  if (loading) return <LoadingIndicator />;
+  if (error) return <Text>Error: {error.message}</Text>;
+
   return (
     <View style={styles.container}>
       <View style={styles.list}>
         <FlashList
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           ListHeaderComponent={
             <View style={styles.header}>
               <TouchableOpacity onPress={() => sortMovies(sortbyEnum.title, sortedMovies.ascending)}>
@@ -90,7 +92,7 @@ const EpisodeScreen = () => {
           refreshing={loading}
           renderItem={renderItem}
           keyExtractor={(item: any) => item.episodeID.toString()}
-          data={sortedMovies.movies}
+          data={sortedMovies?.movies ?? []}
           estimatedItemSize={data.allFilms.totalCount || 10}
         />
       </View>

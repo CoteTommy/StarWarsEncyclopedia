@@ -6,17 +6,19 @@ import { LikedStatus, StorageKeys } from "@constants/Enums";
 import { FontAwesome } from "@expo/vector-icons";
 import { getData, storeData } from "@helpers/AsyncStorageHelper";
 import { GET_ALL_CHARACTERS } from "@queries/CharacterQuery";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
-import { useEffect, useState } from "react";
-import { Person, RootTabScreenProps } from "types";
+import React, { useEffect, useState } from "react";
+import { Person } from "types";
 import { Text, View } from "../components/Themed";
 
-export default function LikedCharacters({ navigation }: RootTabScreenProps<"LikedCharacter">) {
+// type CharacterScreenRouteProps = RouteProp<RootStackParamList, "LikedCharacter">;
+const LikedCharactersScreen = () => {
   // Query all the characters then filter since the swapi api doesn't have filter
   const { data: queryData, loading, error, refetch } = useQuery(GET_ALL_CHARACTERS);
   // From AsyncStorage
   const [likedCharacters, setLikedCharacters] = useState<string[]>([]);
+  const navigation = useNavigation();
 
   const data = queryData?.allPeople?.people || [];
 
@@ -45,14 +47,10 @@ export default function LikedCharacters({ navigation }: RootTabScreenProps<"Like
 
   const renderItem = ({ item }: { item: Person }) => {
     return (
-      // <Pressable onPress={() => _navigation.navigate("MovieDetail", { movieId: item.id })}>
-      // <View >
       <Pressable onPress={() => console.log("Pressed: ", item)} style={styles.item}>
-        {/* <View style={styles.top}> */}
         <Text style={styles.card_title}>{item.name}</Text>
         <Text style={styles.card_subtitle}>Birth year: {item.birthYear}</Text>
         <Text style={styles.card_subtitle}>Amount of movies: {item.filmConnection.films.length}</Text>
-        {/* </View> */}
         <Text style={styles.card_description}></Text>
         <Pressable style={{ alignSelf: "flex-end" }} onPress={() => handleLikeButton(item.id)}>
           <FontAwesome
@@ -62,13 +60,13 @@ export default function LikedCharacters({ navigation }: RootTabScreenProps<"Like
           />
         </Pressable>
       </Pressable>
-      // </View>
     );
   };
 
+  // const CharacterListItem = ({ item, likedCharacters, handleLikeButton, navigation }): JSX.Element => {
+
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Movie List</Text> */}
       <View style={styles.list}>
         <FlashList
           onRefresh={refetch}
@@ -82,7 +80,7 @@ export default function LikedCharacters({ navigation }: RootTabScreenProps<"Like
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -141,3 +139,5 @@ const styles = StyleSheet.create({
   //   justifyContent: "space-between",
   // }
 });
+
+export default LikedCharactersScreen;

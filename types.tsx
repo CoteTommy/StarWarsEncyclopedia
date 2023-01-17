@@ -18,7 +18,6 @@ export type RootStackParamList = {
   Home: undefined;
   MovieDetails: { movie_id: string };
   CharacterDetails: { character_id: string };
-  Character: undefined;
   Episode: undefined;
   Modal: undefined;
   NotFound: undefined;
