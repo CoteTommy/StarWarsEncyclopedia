@@ -1,6 +1,7 @@
+import { Text, View } from "@components/Themed";
 import { LikedStatus } from "@constants/Enums";
 import { FontAwesome } from "@expo/vector-icons";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Person } from "types";
 
@@ -29,21 +30,22 @@ const CharacterListItem: React.FC<Props> = ({ item, likedCharacters, handleLikeB
     });
 
   return (
-    <GestureDetector gesture={Gesture.Exclusive(doubleTap, singleTap)}>
-      <View style={styles.item}>
+    <View style={styles.item}>
+      <Pressable
+        // Quick fix to be able to click on the button only
+        style={{ alignSelf: "flex-end", zIndex: 100, position: "absolute", top: 10, right: 10, bottom: 10 }}
+        onPress={() => handleLikeButton(character.id)}
+        hitSlop={10}>
+        <FontAwesome
+          name={likedCharacters.includes(character.id) ? LikedStatus.Liked : LikedStatus.NotLiked}
+          size={24}
+          color="#FFE81F"
+        />
+      </Pressable>
+      <GestureDetector gesture={Gesture.Exclusive(doubleTap, singleTap)}>
         <Text style={styles.card_title}>{character.name}</Text>
-        <Pressable
-          style={{ alignSelf: "flex-end", zIndex: 100 }}
-          onPress={() => handleLikeButton(character.id)}
-          hitSlop={10}>
-          <FontAwesome
-            name={likedCharacters.includes(character.id) ? LikedStatus.Liked : LikedStatus.NotLiked}
-            size={24}
-            color="#FFE81F"
-          />
-        </Pressable>
-      </View>
-    </GestureDetector>
+      </GestureDetector>
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -87,11 +89,11 @@ const styles = StyleSheet.create({
   card_title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FFE81F",
+    // color: "#FFE81F",
   },
   card_subtitle: {
     fontSize: 18,
-    color: "#FFE81F",
+    // color: "#FFE81F",
   },
   card_description: {
     fontSize: 18,

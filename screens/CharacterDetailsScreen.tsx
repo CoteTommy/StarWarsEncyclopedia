@@ -1,12 +1,13 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
 import { useQuery } from "@apollo/client";
 import { LoadingIndicator } from "@components/LoadingIndicator";
-import { View } from "@components/Themed";
+import { Text, View } from "@components/Themed";
 import { GET_CHARACTER } from "@queries/CharacterQuery";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
-import { Person, RootStackParamList } from "types";
+import { useEffect } from "react";
+import { Film, Person, RootStackParamList } from "types";
 
 type CharacterDetailsScreenProps = RouteProp<RootStackParamList, "CharacterDetails">;
 const CharacterDetailsScreen = () => {
@@ -16,29 +17,34 @@ const CharacterDetailsScreen = () => {
     variables: { id: routeParams.character_id },
   });
 
-  if (loading) return <LoadingIndicator />;
-  if (error) return <Text>Error: {error.message}</Text>;
+  useEffect(() => {
+    data &&
+      navigation.setOptions({ title: data?.person?.name});
+  }, [data]);
 
-  const character = data.person as Person;
-
-  // navigation.setOptions({ title: movie.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
-
-  const renderItem = ({ item: movie }: any) => {
-    // console.log("🚀 ~ file: MovieScreen.tsx:34 ~ renderItem ~ item", movie);
+  const renderItem = ({ item: movie }: { item: Film }) => {
     return (
-      <Pressable style={styles.item} onPress={() => navigation.navigate("MovieDetails", { movie_id: movie.id })}>
+      <Pressable
+        onPress={() => navigation.navigate("MovieDetails", { movie_id: String(movie.episodeID) })}
+        style={styles.item}>
         <Text style={styles.card_title}>{movie.title}</Text>
+        <Text style={styles.card_subtitle}>{movie.releaseDate}</Text>
+        <Text style={styles.card_description}>{movie?.openingCrawl?.substring(0, 50).replace(/\r\n/g, " ")}...</Text>
       </Pressable>
     );
   };
 
+  if (loading) return <LoadingIndicator />;
+  if (error) return <Text>Error: {error.message}</Text>;
+
+  const character = data.person as Person;
   return (
     <View style={styles.container}>
       <View style={styles.informationContainer}>
-        {/* <Text style={styles.card_subtitle}>Release Date: {movie.releaseDate}</Text>
-        <Text style={styles.card_subtitle}>Species Count: {movie.speciesConnection.totalCount}</Text>
-        <Text style={styles.card_subtitle}>Planet Count: {movie.planetConnection.totalCount}</Text>
-        <Text style={styles.card_subtitle}>Vehicles Count: {movie.vehicleConnection.totalCount}</Text> */}
+        <Text style={styles.card_subtitle}>Birth Year: {character.birthYear}</Text>
+        <Text style={styles.card_subtitle}>Height: {character.height}</Text>
+        <Text style={styles.card_subtitle}>Mass: {character.mass}kg</Text>
+        <Text style={styles.card_subtitle}>Homeworld: {character.homeworld.name}</Text>
         <View style={styles.list}>
           <Text style={styles.card_subtitle}>Movies:</Text>
           <FlashList
@@ -84,7 +90,7 @@ const styles = StyleSheet.create({
     padding: 20,
     shadowColor: "#FFE81F",
     shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 3,
   },
   list: {
@@ -94,11 +100,9 @@ const styles = StyleSheet.create({
   card_title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FFE81F",
   },
   card_subtitle: {
     fontSize: 18,
-    color: "#FFE81F",
   },
   card_description: {
     fontSize: 18,

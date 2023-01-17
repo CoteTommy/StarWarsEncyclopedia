@@ -2,6 +2,7 @@ import { Pressable, StyleSheet } from "react-native";
 
 import { useQuery } from "@apollo/client";
 import { LoadingIndicator } from "@components/LoadingIndicator";
+import { Text, View } from "@components/Themed";
 import { LikedStatus, StorageKeys } from "@constants/Enums";
 import { FontAwesome } from "@expo/vector-icons";
 import { getData, storeData } from "@helpers/AsyncStorageHelper";
@@ -10,7 +11,6 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import React, { useEffect, useState } from "react";
 import { Person } from "types";
-import { Text, View } from "../components/Themed";
 
 // type CharacterScreenRouteProps = RouteProp<RootStackParamList, "LikedCharacter">;
 const LikedCharactersScreen = () => {
@@ -21,6 +21,10 @@ const LikedCharactersScreen = () => {
   const navigation = useNavigation();
 
   const data = queryData?.allPeople?.people || [];
+
+  useEffect(() => {
+    navigation.setOptions({ title: "Liked characters", headerTitleStyle: { fontFamily: "Strjmono" } });
+  }, []);
 
   // Ensure the data is always up to date when navigating to this screen
   const isFocused = useIsFocused();
@@ -47,7 +51,7 @@ const LikedCharactersScreen = () => {
 
   const renderItem = ({ item }: { item: Person }) => {
     return (
-      <Pressable onPress={() => console.log("Pressed: ", item)} style={styles.item}>
+      <Pressable onPress={() => navigation.navigate("CharacterDetails", { character_id: item.id })} style={styles.item}>
         <Text style={styles.card_title}>{item.name}</Text>
         <Text style={styles.card_subtitle}>Birth year: {item.birthYear}</Text>
         <Text style={styles.card_subtitle}>Amount of movies: {item.filmConnection.films.length}</Text>
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
     padding: 20,
     shadowColor: "#FFE81F",
     shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 3,
   },
   list: {

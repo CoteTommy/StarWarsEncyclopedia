@@ -10,8 +10,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
-import Colors from "@constants/Colors";
-import useColorScheme from "@hooks/useColorScheme";
 import CharacterDetailsScreen from "@screens/CharacterDetailsScreen";
 import EpisodeScreen from "@screens/EpisodeScreen";
 import HomeScreen from "@screens/HomeScreen";
@@ -38,7 +36,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Root">
+    <Stack.Navigator initialRouteName="Root" screenOptions={{ headerTintColor: "#FFE81F" }}>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="MovieDetails" component={MovieDetailsScreen} options={{ headerShown: true }} />
       <Stack.Screen name="CharacterDetails" component={CharacterDetailsScreen} options={{ headerShown: true }} />
@@ -56,13 +54,11 @@ function RootNavigator() {
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: "#FFE81F",
       }}>
       <BottomTab.Screen
         name="Home"

@@ -1,9 +1,9 @@
-import { Dimensions, Image, StyleSheet, Text } from "react-native";
+import { Dimensions, Image, StyleSheet } from "react-native";
 
 import { useQuery } from "@apollo/client";
 import CharacterListItem from "@components/CharacterListItem";
 import { LoadingIndicator } from "@components/LoadingIndicator";
-import { View } from "@components/Themed";
+import { Text, View } from "@components/Themed";
 import { StorageKeys } from "@constants/Enums";
 import { getData, storeData } from "@helpers/AsyncStorageHelper";
 import { GET_MOVIE } from "@queries/MovieQuery";
@@ -36,22 +36,21 @@ const MovieDetailsScreen = () => {
   }, [likedCharacters]);
 
   useEffect(() => {
-    data &&
-      navigation.setOptions({ title: data.film.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
+    data && navigation.setOptions({ title: data.film.title, headerTitleStyle: { fontFamily: "Strjmono" } });
   }, [data]);
 
   const handleLikeButton = (id: string) => {
-    likedCharacters.includes(id);
+    if (!likedCharacters.includes(id)) {
+      scale.value = withSpring(1, undefined, (isFinished) => {
+        if (isFinished) {
+          scale.value = withDelay(500, withSpring(0));
+        }
+      });
+    }
 
     likedCharacters.includes(id)
       ? setLikedCharacters(likedCharacters.filter((characterId) => characterId !== id))
       : setLikedCharacters([...likedCharacters, id]);
-
-    scale.value = withSpring(1, undefined, (isFinished) => {
-      if (isFinished) {
-        scale.value = withDelay(500, withSpring(0));
-      }
-    });
   };
 
   const imageStyle = useAnimatedStyle(() => ({
@@ -168,11 +167,11 @@ const styles = StyleSheet.create({
   card_title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FFE81F",
+    // color: "#FFE81F",
   },
   card_subtitle: {
     fontSize: 18,
-    color: "#FFE81F",
+    // color: "#FFE81F",
   },
   card_description: {
     fontSize: 18,
