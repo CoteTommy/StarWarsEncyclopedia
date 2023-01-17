@@ -11,10 +11,6 @@ import { Person, RootStackParamList } from "types";
 type CharacterDetailsScreenProps = RouteProp<RootStackParamList, "CharacterDetails">;
 const CharacterDetailsScreen = () => {
   const routeParams = useRoute<CharacterDetailsScreenProps>().params;
-  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
-  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
-  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
-  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:14 ~ CharacterDetailsScreen ~ routeParams", routeParams);
   const navigation = useNavigation();
   const { data, loading, error } = useQuery(GET_CHARACTER, {
     variables: { id: routeParams.character_id },
@@ -23,13 +19,12 @@ const CharacterDetailsScreen = () => {
   if (loading) return <LoadingIndicator />;
   if (error) return <Text>Error: {error.message}</Text>;
 
-  console.log("🚀 ~ file: CharacterDetailsScreen.tsx:23 ~ CharacterDetailsScreen ~ data", data);
   const character = data.person as Person;
 
   // navigation.setOptions({ title: movie.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
 
   const renderItem = ({ item: movie }: any) => {
-    console.log("🚀 ~ file: MovieScreen.tsx:34 ~ renderItem ~ item", movie);
+    // console.log("🚀 ~ file: MovieScreen.tsx:34 ~ renderItem ~ item", movie);
     return (
       <Pressable style={styles.item} onPress={() => navigation.navigate("MovieDetails", { movie_id: movie.id })}>
         <Text style={styles.card_title}>{movie.title}</Text>

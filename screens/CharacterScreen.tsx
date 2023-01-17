@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, TouchableWithoutFeedback } from "react-native";
 
 import { useQuery } from "@apollo/client";
 import { LoadingIndicator } from "@components/LoadingIndicator";
@@ -38,9 +38,9 @@ const CharacterScreen = () => {
   if (error) return <Text>Error: {error.message}</Text>;
 
   const renderItem = ({ item }: { item: Person }) => {
-    console.log("🚀 ~ file: CharacterScreen.tsx:19 ~ renderItem ~ person", item);
     return (
-      <Pressable onPress={() => console.log("Pressed: ", item)} style={styles.item}>
+      // <TouchableWithoutFeedback onPress={() => console.log("Pressed: ", item)} style={styles.item}>
+      <TouchableWithoutFeedback onPress={() => console.log("Pressed: ", item)} style={styles.item}>
         <Text style={styles.card_title}>{item.name}</Text>
         <Text style={styles.card_subtitle}>Birth year: {item.birthYear}</Text>
         <Text style={styles.card_subtitle}>Amount of movies: {item.filmConnection.films.length}</Text>
@@ -52,7 +52,7 @@ const CharacterScreen = () => {
             color="#FFE81F"
           />
         </Pressable>
-      </Pressable>
+      </TouchableWithoutFeedback>
     );
   };
 

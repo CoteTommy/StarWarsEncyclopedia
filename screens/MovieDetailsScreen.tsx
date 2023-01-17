@@ -1,51 +1,68 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 
 import { useQuery } from "@apollo/client";
+import CharacterListItem from "@components/CharacterListItem";
 import { LoadingIndicator } from "@components/LoadingIndicator";
 import { View } from "@components/Themed";
+import { StorageKeys } from "@constants/Enums";
+import { getData, storeData } from "@helpers/AsyncStorageHelper";
 import { GET_MOVIE } from "@queries/MovieQuery";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
+import { useEffect, useState } from "react";
 import { Film, RootStackParamList } from "types";
 
 type MovieDetailsScreenProps = RouteProp<RootStackParamList, "MovieDetails">;
 const MovieDetailsScreen = () => {
-  const routeParams = useRoute<MovieDetailsScreenProps>().params;
   const navigation = useNavigation();
+  const routeParams = useRoute<MovieDetailsScreenProps>().params;
+  const [likedCharacters, setLikedCharacters] = useState<string[]>([]);
+  // const rrr = useRef(null);
+
   const { data, loading, error } = useQuery(GET_MOVIE, {
     variables: { id: routeParams.movie_id },
   });
 
+  useEffect(() => {
+    getData(StorageKeys.LikedCharacters).then((data: string[] | undefined) => {
+      setLikedCharacters(data || []);
+    });
+  }, []);
+
+  useEffect(() => {
+    storeData(StorageKeys.LikedCharacters, likedCharacters.join(","));
+  }, [likedCharacters]);
+
+  const handleLikeButton = (id: string) => {
+    likedCharacters.includes(id)
+      ? setLikedCharacters(likedCharacters.filter((characterId) => characterId !== id))
+      : setLikedCharacters([...likedCharacters, id]);
+  };
+
+  useEffect(() => {
+    data &&
+      navigation.setOptions({ title: data.film.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
+  }, [data]);
+
   if (loading) return <LoadingIndicator />;
   if (error) return <Text>Error: {error.message}</Text>;
-
   const movie = data.film as Film;
-
-  navigation.setOptions({ title: movie.title, headerTitleStyle: { color: "#FFE81F", fontFamily: "Strjmono" } });
-
-  const renderItem = ({ item: character }: any) => {
-    console.log('🚀 ~ file: MovieDetailsScreen.tsx:29 ~ renderItem ~ character', character);
-    return (
-      <Pressable style={styles.item} onPress={() => navigation.navigate("CharacterDetails", { character_id: character.id })}>
-        <Text style={styles.card_title}>{character.name}</Text>
-      </Pressable>
-    );
-  };
 
   return (
     <View style={styles.container}>
       <View style={styles.informationContainer}>
+        <Text style={styles.card_subtitle}>Planet Count: {movie.planetConnection.totalCount}</Text>
         <Text style={styles.card_subtitle}>Release Date: {movie.releaseDate}</Text>
         <Text style={styles.card_subtitle}>Species Count: {movie.speciesConnection.totalCount}</Text>
-        <Text style={styles.card_subtitle}>Planet Count: {movie.planetConnection.totalCount}</Text>
         <Text style={styles.card_subtitle}>Vehicles Count: {movie.vehicleConnection.totalCount}</Text>
         <View style={styles.list}>
           <Text style={styles.card_subtitle}>Characters:</Text>
           <FlashList
-            renderItem={renderItem}
+            renderItem={(item) => CharacterListItem({ item, likedCharacters, handleLikeButton, navigation })}
             keyExtractor={(item) => item.id.toString()}
             data={movie.characterConnection.characters}
             estimatedItemSize={movie.characterConnection.totalCount || 10}
+            extraData={likedCharacters}
           />
         </View>
       </View>

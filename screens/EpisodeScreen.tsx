@@ -1,4 +1,4 @@
-import { Pressable, StyleProp, StyleSheet, TextStyle } from "react-native";
+import { Pressable, StyleProp, StyleSheet, TextStyle, TouchableOpacity } from "react-native";
 
 import { useQuery } from "@apollo/client";
 import { LoadingIndicator } from "@components/LoadingIndicator";
@@ -44,9 +44,9 @@ const EpisodeScreen = () => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable onPress={() => sortMovies()}>
+        <TouchableOpacity onPress={() => sortMovies()}>
           <Text style={[styles.card_title, { paddingRight: 10 }]}>{sortedMovies.ascending ? "Asc" : "Desc"}</Text>
-        </Pressable>
+        </TouchableOpacity>
       ),
       headerTitleStyle: { ...styles.card_title, fontFamily: "Strjmono" },
     });
@@ -78,12 +78,12 @@ const EpisodeScreen = () => {
         <FlashList
           ListHeaderComponent={
             <View style={styles.header}>
-              <Pressable onPress={() => sortMovies(sortbyEnum.title, sortedMovies.ascending)}>
+              <TouchableOpacity onPress={() => sortMovies(sortbyEnum.title, sortedMovies.ascending)}>
                 <Text style={sortOptionStyle(sortbyEnum.title)}>Sort by title</Text>
-              </Pressable>
-              <Pressable onPress={() => sortMovies(sortbyEnum.releaseDate, sortedMovies.ascending)}>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => sortMovies(sortbyEnum.releaseDate, sortedMovies.ascending)}>
                 <Text style={sortOptionStyle(sortbyEnum.releaseDate)}>Sort by release date</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           }
           onRefresh={refetch}
