@@ -27,17 +27,8 @@ export default {
     backgroundLight: "#2C2C2C",
     background: "#1C1C1C",
     backgroundDarkest: "#000000",
-    // Not bright enough
-    // text: "#9B9B9B",
     text: "#c7c7c7",
     link: "#0066CC",
     danger: "#D6192E",
   },
-  // Another color scheme
-  // Black (#000000) for the background
-  // Dark gray (#333333) for text and other UI elements
-  // Silver (#C0C0C0) for accents and highlights
-  // Blue (#007AFF) for links and buttons
-  // Red (#FF3B30) for important or dangerous actions
-  // White (#FFFFFF) for certain typography
 };
