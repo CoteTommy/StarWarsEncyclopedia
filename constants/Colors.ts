@@ -19,11 +19,14 @@ export default {
   // Color scheme for the Star Wars app
   starWars: {
     primary: "#F1C40F",
-    accent: "#FDB813",
+    accent: "#F1C40F",
     // secondary: "#1A1A1A",
     tertiary: "#00A8E8",
     // accent: "#E74C3C",
+    backgroundLightest: "#333333",
+    backgroundLight: "#2C2C2C",
     background: "#1C1C1C",
+    backgroundDarkest: "#000000",
     // Not bright enough
     // text: "#9B9B9B",
     text: "#c7c7c7",

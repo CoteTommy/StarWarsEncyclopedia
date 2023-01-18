@@ -7,14 +7,12 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { useCallback } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import useCachedResources from "./hooks/useCachedResources";
-import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
     Strjmono: require("./assets/fonts/Strjmono.ttf"),
   });
@@ -43,7 +41,7 @@ export default function App() {
       <ApolloProvider client={client}>
         <SafeAreaProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <Navigation colorScheme={colorScheme} />
+            <Navigation/>
             <StatusBar />
           </GestureHandlerRootView>
         </SafeAreaProvider>

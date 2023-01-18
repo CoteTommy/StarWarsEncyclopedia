@@ -18,6 +18,7 @@ module.exports = function (api) {
             "@queries": "./queries",
             "@helpers": "./helpers",
             "@colors": "./constants/Colors.ts",
+            "@styles": "./styles",
           },
         },
       ],

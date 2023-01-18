@@ -1,9 +1,11 @@
-import { Text, View } from "@components/Themed";
+import { View } from "@components/Themed";
 import { LikedStatus } from "@constants/Enums";
 import { FontAwesome } from "@expo/vector-icons";
+import { ListStyles } from "@styles/ComponentStyles";
 import { Pressable, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Person } from "types";
+import { MonoText } from "./StyledText";
 
 interface Props {
   item: { item: Person };
@@ -30,7 +32,7 @@ const CharacterListItem: React.FC<Props> = ({ item, likedCharacters, handleLikeB
     });
 
   return (
-    <View style={styles.item}>
+    <View style={ListStyles.card}>
       <Pressable
         // Quick fix to be able to click on the button only
         style={{ alignSelf: "flex-end", zIndex: 100, position: "absolute", top: 10, right: 10, bottom: 10 }}
@@ -43,7 +45,7 @@ const CharacterListItem: React.FC<Props> = ({ item, likedCharacters, handleLikeB
         />
       </Pressable>
       <GestureDetector gesture={Gesture.Exclusive(doubleTap, singleTap)}>
-        <Text style={styles.card_title}>{character.name}</Text>
+        <MonoText style={styles.card_title}>{character.name}</MonoText>
       </GestureDetector>
     </View>
   );

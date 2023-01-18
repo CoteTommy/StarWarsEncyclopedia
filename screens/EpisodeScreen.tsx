@@ -1,11 +1,13 @@
-import { Pressable, StyleProp, StyleSheet, TextStyle, TouchableOpacity } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 import { useQuery } from "@apollo/client";
 import { LoadingIndicator } from "@components/LoadingIndicator";
+import { MonoTextDescription, MonoTextSubtitle, MonoTextTitle, StarWarsText } from "@components/StyledText";
 import { Text, View } from "@components/Themed";
 import { GET_ALL_MOVIES } from "@queries/MovieQuery";
 import { useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
+import { ComponentStyles, ListStyles, ModifierStyles } from "@styles/ComponentStyles";
 import { useEffect, useState } from "react";
 import { Film } from "types";
 
@@ -45,46 +47,57 @@ const EpisodeScreen = () => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity onPress={() => sortMovies()}>
-          <Text style={[styles.card_title, { paddingRight: 10 }]}>{sortedMovies.ascending ? "Asc" : "Desc"}</Text>
+          <StarWarsText style={[ListStyles.card_title, { paddingRight: 10 }]}>
+            {sortedMovies.ascending ? "Asc" : "Desc"}
+          </StarWarsText>
         </TouchableOpacity>
       ),
-      headerTitleStyle: { ...styles.card_title, fontFamily: "Strjmono" },
+      headerTitleStyle: { ...ListStyles.card_title, fontFamily: "Strjmono" },
     });
   }, [sortedMovies]);
 
   const renderItem = ({ item: movie }: any) => {
     return (
-      <Pressable onPress={() => navigation.navigate("MovieDetails", { movie_id: movie.episodeID })} style={styles.item}>
-        <Text style={styles.card_title}>{movie.title}</Text>
-        <Text style={styles.card_subtitle}>{movie.releaseDate}</Text>
-        <Text style={styles.card_description}>{movie?.openingCrawl?.substring(0, 50).replace(/\r\n/g, " ")}...</Text>
+      <Pressable onPress={() => navigation.navigate("MovieDetails", { movie_id: movie.episodeID })} style={ListStyles.card}>
+        <MonoTextTitle bold style={{ paddingLeft: 5 }}>
+          {movie.title}
+        </MonoTextTitle>
+        <MonoTextSubtitle style={{ paddingLeft: 10 }}>{movie.releaseDate}</MonoTextSubtitle>
+        <MonoTextDescription style={{ paddingLeft: 10 }}>
+          {movie?.openingCrawl?.substring(0, 50).replace(/\r\n/g, " ")}...
+        </MonoTextDescription>
       </Pressable>
     );
-  };
-
-  const sortOptionStyle = (sortBy: sortbyEnum): StyleProp<TextStyle> => {
-    return [
-      styles.card_subtitle,
-      { fontWeight: sortedMovies.sortBy === sortBy ? "bold" : "normal" },
-    ] as StyleProp<TextStyle>;
   };
 
   if (loading) return <LoadingIndicator />;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.list}>
+    <View style={ComponentStyles.container}>
+      <View style={ListStyles.listContainer}>
         <FlashList
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           ListHeaderComponent={
             <View style={styles.header}>
-              <TouchableOpacity onPress={() => sortMovies(sortbyEnum.title, sortedMovies.ascending)}>
-                <Text style={sortOptionStyle(sortbyEnum.title)}>Sort by title</Text>
+              <TouchableOpacity
+                onPress={() => sortMovies(sortbyEnum.title, sortedMovies.ascending)}
+                style={[sortedMovies.sortBy === sortbyEnum.title && ModifierStyles.shadow]}>
+                <MonoTextDescription
+                  bold={sortedMovies.sortBy === sortbyEnum.title}
+                  style={[sortedMovies.sortBy === sortbyEnum.title && ModifierStyles.shadow]}>
+                  Sort by title
+                </MonoTextDescription>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => sortMovies(sortbyEnum.releaseDate, sortedMovies.ascending)}>
-                <Text style={sortOptionStyle(sortbyEnum.releaseDate)}>Sort by release date</Text>
+              <TouchableOpacity
+                style={[sortedMovies.sortBy === sortbyEnum.releaseDate && ModifierStyles.shadow]}
+                onPress={() => sortMovies(sortbyEnum.releaseDate, sortedMovies.ascending)}>
+                <MonoTextDescription
+                  bold={sortedMovies.sortBy === sortbyEnum.releaseDate}
+                  style={[sortedMovies.sortBy === sortbyEnum.releaseDate && ModifierStyles.shadow]}>
+                  Sort by release date
+                </MonoTextDescription>
               </TouchableOpacity>
             </View>
           }
@@ -101,58 +114,11 @@ const EpisodeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "flex-start",
-  },
   header: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     paddingVertical: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    paddingTop: 20,
-  },
-  separator: {
-    height: 1,
-    marginBottom: 10,
-    marginTop: 30,
-    width: "80%",
-  },
-  item: {
-    borderColor: "#FFE81F",
-    borderRadius: 5,
-    borderWidth: 2,
-    display: "flex",
-    flex: 1,
-    fontSize: 30,
-    marginVertical: 8,
-    padding: 20,
-    shadowColor: "#FFE81F",
-    shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-  },
-  list: {
-    alignSelf: "center",
-    height: "100%",
-    width: "95%",
-  },
-  card_title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    fontFamily: "Strjmono",
-  },
-  card_subtitle: {
-    fontSize: 18,
-  },
-  card_description: {
-    fontSize: 18,
-    paddingTop: 4,
   },
 });
 
